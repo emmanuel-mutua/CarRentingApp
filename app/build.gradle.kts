@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.dev.carrenting"
+    namespace = "com.emmutua.vehiclehire"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.dev.carrenting"
+        applicationId = "com.emmutua.vehiclehire"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
