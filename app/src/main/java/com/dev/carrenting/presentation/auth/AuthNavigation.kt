@@ -86,7 +86,7 @@ fun NavGraphBuilder.registerScreen(
             viewModel = viewModel,
             navigateBack = navigateBack,
             onSuccessRegistration = {
-                viewModel.sendEmailVerification()
+//                viewModel.sendEmailVerification()
                 navigateToLogin()
             },
             onGotoLoginClicked = {

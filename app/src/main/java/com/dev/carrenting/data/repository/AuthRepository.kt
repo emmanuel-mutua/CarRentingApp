@@ -21,9 +21,10 @@ import kotlin.coroutines.suspendCoroutine
 
 typealias SignInResponse = Response<Boolean>
 typealias SignOutResponse = Response<Boolean>
-typealias SignUpResponse = Response<Boolean>
+typealias SignUpResponse = Response<String>
 typealias AuthStateResponse = StateFlow<Boolean>
 typealias SendEmailVerificationResponse = Response<Boolean>
+
 interface AuthRepository {
     val currentUser: FirebaseUser?
     fun getErrorMessage(): Flow<String>
@@ -33,6 +34,7 @@ interface AuthRepository {
     fun getAuthState(viewModelScope: CoroutineScope): AuthStateResponse
     suspend fun sendEmailVerification(): SendEmailVerificationResponse
     suspend fun reloadFirebaseUser()
+    suspend fun signUpUser(email: String, password: String): SignUpResponse
 }
 
 class AuthAuthRepositoryImpl @Inject constructor(
@@ -84,7 +86,7 @@ class AuthAuthRepositoryImpl @Inject constructor(
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Log.d("Auth", "Sign in successful")
-                            continuation.resume(Response.Success(true))
+//                            continuation.resume(Response.Success(true))
                         } else {
                             task.exception?.let { exception ->
                                 Log.d("Auth, Exception", "${exception.localizedMessage}")
@@ -134,5 +136,18 @@ class AuthAuthRepositoryImpl @Inject constructor(
 
     override suspend fun reloadFirebaseUser() {
         auth.currentUser?.reload()?.await()
+    }
+
+    override suspend fun signUpUser(email: String, password: String): SignUpResponse {
+        var signUpResponse: SignUpResponse = Response.Idle
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                it.user?.sendEmailVerification()
+                signUpResponse = Response.Success(it.user?.uid.orEmpty())
+            }
+            .addOnFailureListener {
+                signUpResponse = Response.Failure(it.localizedMessage)
+            }
+        return signUpResponse
     }
 }

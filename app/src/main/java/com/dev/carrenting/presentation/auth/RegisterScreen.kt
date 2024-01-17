@@ -77,29 +77,34 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     val context = LocalContext.current
     val signUpResponse by viewModel.signUpResponse.collectAsState()
+    val registerState = viewModel.registerState.collectAsState().value
     when (signUpResponse) {
         Response.Loading -> {
             isLoading = true
         }
-
-        is Response.Success -> {
+        is Response.Success ->{
             isLoading = false
-            val isSignedUp = (signUpResponse as Response.Success<Boolean>).data
-            if (isSignedUp) {
-                LaunchedEffect(Unit) {
-                    viewModel.saveUserToDataBase()
-                    onSuccessRegistration()
-                    Toast.makeText(
-                        context,
-                        "Account created," +
-                                " Please verify email" +
-                                "",
-                        Toast.LENGTH_LONG,
-                    )
-                        .show()
-                }
-            }
+            onSuccessRegistration()
         }
+
+//        is Response.Success -> {
+//            isLoading = false
+//            val isSignedUp = (signUpResponse as Response.Success<Boolean>).data
+//            if (isSignedUp) {
+//                LaunchedEffect(Unit) {
+////                    viewModel.saveUserToDataBase()
+//                    onSuccessRegistration()
+//                    Toast.makeText(
+//                        context,
+//                        "Account created," +
+//                                " Please verify email" +
+//                                "",
+//                        Toast.LENGTH_LONG,
+//                    )
+//                        .show()
+//                }
+//            }
+//        }
 
         is Response.Failure -> {
             isLoading = false
@@ -228,12 +233,13 @@ fun RegisterScreen(
                             .show()
                         return@Button
                     }
-                    viewModel.saveUserDetails(
-                        firstname,
-                        sirname,
-                        email,
-                    )
-                    viewModel.signUpUser(email, password)
+//                    viewModel.saveUserDetails(
+//                        firstname,
+//                        sirname,
+//                        email,
+//                    )
+//                    viewModel.signUpUser(email, password)
+                    viewModel.signUpMyUser(email, password, firstname, surname = sirname)
                 },
                 shape = RoundedCornerShape(16),
                 colors = ButtonDefaults.buttonColors(
