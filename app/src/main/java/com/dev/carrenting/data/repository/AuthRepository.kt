@@ -24,8 +24,6 @@ typealias SignOutResponse = Response<Boolean>
 typealias SignUpResponse = Response<Boolean>
 typealias AuthStateResponse = StateFlow<Boolean>
 typealias SendEmailVerificationResponse = Response<Boolean>
-typealias IsEmailVerifiedResponse = Boolean
-
 interface AuthRepository {
     val currentUser: FirebaseUser?
     fun getErrorMessage(): Flow<String>
@@ -34,7 +32,6 @@ interface AuthRepository {
     fun signOut(): SignOutResponse
     fun getAuthState(viewModelScope: CoroutineScope): AuthStateResponse
     suspend fun sendEmailVerification(): SendEmailVerificationResponse
-    fun isEmailVerified(): Flow<Boolean>
     suspend fun reloadFirebaseUser()
 }
 
@@ -132,16 +129,6 @@ class AuthAuthRepositoryImpl @Inject constructor(
             Response.Success(true)
         } catch (e: Exception) {
             Response.Failure("E")
-        }
-    }
-
-    override fun isEmailVerified(): Flow<Boolean> = callbackFlow {
-        val authStateListener = AuthStateListener { auth ->
-            trySend(auth.currentUser?.isEmailVerified?:false)
-        }
-        auth.addAuthStateListener(authStateListener)
-        awaitClose {
-            auth.removeAuthStateListener(authStateListener)
         }
     }
 

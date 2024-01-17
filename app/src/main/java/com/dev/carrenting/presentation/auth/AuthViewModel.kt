@@ -23,6 +23,7 @@ class AuthViewModel @Inject constructor(
     private var _registerState = MutableStateFlow(AuthStateData())
     val registerState = _registerState.asStateFlow()
     val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+    val isEmailVerified = currentUser?.isEmailVerified ?: false
     private var _userData = MutableStateFlow(UserData())
 
 
@@ -56,11 +57,20 @@ class AuthViewModel @Inject constructor(
 
                 is Response.Success -> {
                     _registerState.update {
-                        it.copy(
-                            isLoading = false,
-                            isSignedIn = true,
-                            message = "Success"
-                        )
+                        if (isEmailVerified){
+                            it.copy(
+                                isLoading = false,
+                                isSignedIn = true,
+                                message = "Success"
+                            )
+                        }else{
+                            it.copy(
+                                isLoading = false,
+                                isSignedIn = false,
+                                message = "Please verify email"
+                            )
+                        }
+
                     }
                 }
 

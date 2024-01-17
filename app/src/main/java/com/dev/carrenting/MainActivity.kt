@@ -71,7 +71,7 @@ fun AttachmentApp(name: String, modifier: Modifier = Modifier, activity : Activi
         val navController = rememberNavController()
         val authViewModel: AuthViewModel = hiltViewModel()
         val startDestination =
-            if (authViewModel.currentUser != null) {
+            if (authViewModel.currentUser != null && !authViewModel.isEmailVerified) {
                 AuthScreen.Home.route
             } else {
                 AuthScreen.Login.route

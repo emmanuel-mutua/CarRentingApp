@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +52,10 @@ fun AuthNavGraph(
             }
         )
         homeScreen(
-            registerState = registerState,
+            logOut = {
+                authViewModel.signOut()
+                navController.navigateWithPop(AuthScreen.Login.route)
+            }
         )
     }
 }
@@ -94,7 +98,7 @@ fun NavGraphBuilder.registerScreen(
 
 @SuppressLint("CoroutineCreationDuringComposition")
 fun NavGraphBuilder.homeScreen(
-    registerState: AuthStateData,
+    logOut: () -> Unit
 ) {
     composable(AuthScreen.Home.route) {
         Column(
@@ -102,7 +106,9 @@ fun NavGraphBuilder.homeScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Home")
+            TextButton(onClick = logOut) {
+                Text(text = "Log Out")
+            }
         }
     }
 }
