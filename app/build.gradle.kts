@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.lorraine.hiremequick"
+    namespace = "com.dev.carrenting"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ccom.lorraine.hiremequick"
+        applicationId = "com.dev.carrenting"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
