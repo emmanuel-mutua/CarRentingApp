@@ -86,7 +86,7 @@ class AuthViewModel @Inject constructor(
             _signUpResponse.value = Response.Loading
             val response = authRepo.signUpEmailAndPassword(email, password)
             delay(3000)
-            _signUpResponse.value = response
+//            _signUpResponse.value = response
         }
     }
 
@@ -128,6 +128,38 @@ class AuthViewModel @Inject constructor(
             }
             val response = storageService.addUser(_userData.value)
             if (response) {
+            }
+        }
+    }
+
+    fun signUpMyUser(email: String, password: String, firstName: String, surname : String) {
+        _signInResponse.value = Response.Loading
+        viewModelScope.launch {
+            when(val request =  authRepo.signUpEmailAndPassword(email, password)){
+                is Response.Failure -> {
+                    _registerState.update {
+                        it.copy(
+                            message = request.message
+                        )
+                    }
+                }
+                Response.Idle -> Unit
+                Response.Loading -> Unit
+                is Response.Success -> {
+                    val userData = UserData(
+                        uid = request.data,
+                        firstName = firstName,
+                        sirName = surname,
+                        email = email
+                    )
+                    storageService.addUser(userData)
+                    _registerState.update {
+                        it.copy(
+                            isLoading = false,
+                            isSignedIn = true
+                        )
+                    }
+                }
             }
         }
     }
